@@ -1,7 +1,7 @@
 # Serverless Framework + grapgQL + Lambda Function + dynamoDB 
 In this article I intend to show you how to create a SERVELESS project locally and be able to deploy it to AWS, using the Serverless Framework
 
-# ARCHICTERURE
+# ARCHITECTURE
 ![Screenshot](Architecture.jpeg) 
 
 ## What will we do?
