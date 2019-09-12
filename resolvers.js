@@ -17,11 +17,12 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient(options);
 
 // if we want to consult an external API
 const fetchCountry = async () => {
-  const results = await Axios.get(`${url_api}countries?operation=NO`);
+  const results = await Axios.get(`${url_api}countries`);
   console.log(results.data);
   return results.data;
 };
 
+//Crear un 
 const createCustomer = async (args) => {
   const params = {
     TableName: customerTable,
@@ -64,6 +65,7 @@ const getCusomer = ID => {
   });
 };
 
+//
 const getAllCusomers = () => {
   const params = {
     TableName: customerTable
