@@ -13,10 +13,6 @@ provider:
   environment:
     CUSTOMER_TABLE: customer-table-${self:provider.stage}
 
-  plugins:
-  - serverless-dynamodb-local
-  - serverless-offline
-
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -47,6 +43,9 @@ resources:
 #  stage: dev
 #  region: us-east-1
 
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline #serverless-offline needs to be last in the list 
 
 functions:
   graphql:

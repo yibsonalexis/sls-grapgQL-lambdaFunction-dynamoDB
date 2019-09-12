@@ -1,6 +1,9 @@
 # Serverless Framework + grapgQL + Lambda Function + dynamoDB 
 In this article I intend to show you how to create a SERVELESS project locally and be able to deploy it to AWS, using the Serverless Framework
 
+# ARCHICTERURE
+![Screenshot](Architecture.jpeg) 
+
 ## What will we do?
 
 ### Install the serverless cli
@@ -47,6 +50,8 @@ serverless dynamodb install
 ## We will start by configuring the serverless.yml file
 The Serverless Framework allows us to define DynamoDB permissions within serverless.yml. We will define the Dynamo permissions as follows
 
+# serverless.yml
+
 ```
 service: slsgraph
 #app: your-app-name
@@ -62,9 +67,6 @@ provider:
   environment:
     CUSTOMER_TABLE: customer-table-${self:provider.stage}
 
-  plugins:
-  - serverless-dynamodb-local
-  - serverless-offline
 
   iamRoleStatements:
     - Effect: Allow
@@ -78,13 +80,10 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CUSTOMER_TABLE}"
 
 ```
-Note:
-Make sure that serverless-dynamodb-local is above serverless-offline so it will be loaded earlier.
-
-Now your local DynamoDB database will be automatically started before running serverless offline.
 
 
-Now we define the configuration of our database and the table that we will use as well as the main properties of the table
+
+### Now we define the configuration of our database and the table that we will use as well as the main properties of the table
 ```
 resources:
   Resources:
@@ -104,7 +103,20 @@ resources:
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
 ```
 
-we also define the function and the http events in the serverless.yml file
+
+### Define the plugins
+```
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+```
+### Note:
+Make sure that serverless-dynamodb-local is above serverless-offline so it will be loaded earlier.
+
+Now your local DynamoDB database will be automatically started before running serverless offline.
+
+
+### we also define the function and the http events in the serverless.yml file
 
 ```
 functions:
@@ -268,6 +280,123 @@ Provide resolver functions for your schema fields
     };
 
     module.exports = resolvers;
+
+# eschema.js
+And the last thing we will do is configure our GraphQL scheme
+````
+const { gql } = require("apollo-server-lambda");
+
+// Construct a schema, using GraphQL schema language
+const typeDefs = gql`
+  type Country {
+    id: String
+    name: String
+  }
+  
+  type Customer {
+    ID: String
+    FullName: String
+    FirstName: String
+    SecondName: String
+    LastName: String
+    SecondLastName: String
+    Address: String
+    Phone1: String
+    Email: String
+  }
+
+  type Query {
+    Country: [Country]
+    Customers: [Customer]
+    Customer(ID: String!): Customer
+  }
+
+  type Mutation {
+    CreateCustomer(
+      FullName: String
+      FirstName: String
+      SecondName: String
+      LastName: String
+      SecondLastName: String
+      Address: String
+      Phone1: String
+      Email: String
+    ): Boolean
+  }
+`;
+module.exports = typeDefs;
+````
+
+# Usage and command line options
+In your project root run:
+
+run dynamo local
+
+  ```
+  serverless dynamodb start
+  ```
+run all local
+
+    serverless offline start
+
+
+# Links
+- https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.API.html
+- https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/dynamodb-example-document-client.html
+- https://serverless.com/framework/docs/getting-started/
+- https://www.npmjs.com/package/serverless-offline
+- https://www.npmjs.com/package/serverless-dynamodb-local
+- https://www.apollographql.com/docs/apollo-server/
+
+# Examples GraphQL Apollo using Playground
+```
+# Write your query or mutation here
+#
+ mutation CreateCustomer {
+  CreateCustomer(
+    FullName: "Yibson Alexis Leudo Romaña"
+    FirstName:"Yibson"
+    SecondName:"Alexis"
+    LastName:"Leudo"
+    SecondLastName:"Romaña"
+  )
+}
+
+query GetCustomers {
+  Customers {
+    ID
+    FullName
+    FirstName
+  }
+}
+
+query GetCustomers {
+  Customers {
+    ID
+    FullName
+    FirstName
+  }
+}
+
+query GetCustomer {
+  Customers {
+    ID
+    FullName
+    FirstName
+  }
+}
+
+
+query GetContries {
+  Country{
+    id
+  }
+}
+```
+
+
+
+
 
 
  
