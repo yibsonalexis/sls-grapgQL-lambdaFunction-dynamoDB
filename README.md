@@ -226,7 +226,7 @@ const createCustomer = async (args) => {
 
 This function allows us to get a Customer by passing the Customer ID as a parameter
 
-    const getCusomer = ID => {
+    const getCustomer = ID => {
         const params = {
             TableName: customerTable,
             Key: { ID }
@@ -245,7 +245,7 @@ This function allows us to get a Customer by passing the Customer ID as a parame
 
 This function allows us to get all Customers
 
-    const getAllCusomers = () => {
+    const getAllCustomers = () => {
         const params = {
             TableName: customerTable
         };
@@ -271,8 +271,8 @@ Provide resolver functions for your schema fields
     const resolvers = {
         Query: {
             Country: () => fetchCountry(),
-            Customer: (_, { ID }) => getCusomer(ID),
-            Customers: () => getAllCusomers(),
+            Customer: (_, { ID }) => getCustomer(ID),
+            Customers: () => getAllCustomers(),
         },
         Mutation: {
             CreateCustomer: (_, data) => createCustomer(data)
